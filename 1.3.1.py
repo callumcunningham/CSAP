@@ -1,7 +1,7 @@
 import turtle as trtl
 import math
 import random as rand
-#define the
+#define the momma in that big ol papa
 wn = trtl.Screen()
 #initialize the player's turtle
 player1 = trtl.Turtle()
