@@ -181,14 +181,6 @@ def end_the_game ():
     writer.write('Games Up Chump!', font = ("Arial", 100))
     index = 0
     for line in list_of_lines:
-    
-
-
-
-
-
-
-   
 
 start_game()
 
