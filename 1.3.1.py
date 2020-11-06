@@ -13,6 +13,7 @@ list_of_lines = []
 
 list_of_turtles = []
 
+
 collisions_detected = 0
 
 end_game = False
@@ -75,7 +76,7 @@ def collision_detection (LOL, player):
                     print("The game’s up, chump!")
                     print(collisions_detected)
                     collisions_detected +=1
-                    end_the_game()
+                    end_the_game(player)
 
             #or (abs(player.xcor()) > 400) or (abs(player.ycor()) > 400))
             #((((x >= line[0]) and  (x <= line[2])) or ((x <= line[0]) and  x >= line[2]) ) and ((y >= line[1] and  y <= line[3]) or ((y <= line[1]) and  y >= line[3]) ) )):
@@ -84,18 +85,19 @@ def collision_detection (LOL, player):
             print("The game’s up, chump!")
             print(collisions_detected)
             collisions_detected +=1
-            end_the_game()
+            end_the_game(player)
 
 def bot_move (bot, index):
     global end_game
     bot.forward(5)
+    #turn and shoot against the player
     old_ang = shoot_angle(player1, player2)
     bot.right(old_ang)
     new_angle = shoot_angle(player1, player2)
     if (new_angle >old_ang) and (abs(new_angle) > 10):
         bot.left(2*old_ang)
-    if index%5 == 0:
-        bot.setheading(bot.heading() - rand.randint(-50,50))
+    if index%50 == 0:
+        bot.setheading(bot.heading() - rand.randint(-20,20))
         if not(end_game):
             shoot(bot)
 
@@ -152,11 +154,16 @@ def start_game ():
     
     def call_shoot():
         shoot(player1)
-    
+
+    def sprint ():
+        player1.hideturtle()
+        player1.forward(150)
+        player1.showturtle()    
     #define responses to keypress events
     wn.onkeypress(turn_left, "Left")
     wn.onkeypress(turn_right, "Right")
     wn.onkeypress(call_shoot, "0")
+    wn.onkeypress(sprint, "Up")
     wn.listen()
     #begin the mainloop, in which the game is played
     index = 0
@@ -170,18 +177,66 @@ def start_game ():
             break
     print("out of loop")
 
-def end_the_game ():
+def end_the_game (Loser):
     global end_game
     player1.hideturtle()
     player2.hideturtle()
     end_game = True
     writer.penup()
-    writer.goto(-400, 400)
+    writer.goto(0,0)
     writer.pendown()
-    writer.write('Games Up Chump!', font = ("Arial", 100))
+    if Loser == player1:
+        writer.write('Games Up Chump!', font = ("Arial", 20))
+    else:
+        writer.write('You Won!', font = ("Arial", 20) )
     index = 0
     for line in list_of_lines:
-
+        T = list_of_turtles[index]
+        T.penup()
+        T.goto(line[0], line[1])
+        T.color(rand.choice(colors))
+        T.showturtle()
+        index+=1
+        index2 = 0
+        writer.penup()
+        writer.goto(line[0], line[1])
+        writer.pendown()
+        writer.setheading(T.heading())
+        writer.showturtle()
+        writer.color("white")
+        while abs(T.xcor()) < 400 and abs(T.ycor())<400:
+            T.forward(5)
+            T.stamp()
+            if index2 >20:
+                writer.forward(5)
+                writer.stamp()
+            index2 +=1
+        for i in range(21):
+            writer.forward(5)
+            writer.stamp()
+            writer.showturtle()
+        T.clear()
+        T.hideturtle()
+        turt = T
+    turt.showturtle()
+    turt.goto(400,400)
+    turt.setheading(0)
+    turt.color("Black")
+    writer.goto(400, 400)
+    writer.setheading(0)
+    for i in range(4):
+        turt.right(90)
+        for i in range(160):
+            turt.forward(5)
+            turt.stamp()
+    for i in range(4):
+        writer.right(90)
+        for i in range(160):
+            writer.forward(5)
+            writer.stamp()
+    writer.clear()
+    exit()
+        
 start_game()
 
 wn.mainloop()
